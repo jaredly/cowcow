@@ -1,0 +1,14 @@
+{
+  "name" : "reasnake",
+  "reason" : { "react-jsx" : true},
+  "bs-dependencies": ["reprocessing", "immutable-re"],
+  /*
+  "entries": [{
+    "kind": "bytecode",
+    "main": "Main"
+  }],
+  */
+  "sources": [
+    "src"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "bsb -make-world -w",
+    "build": "webpack -w",
+    "clean": "bsb -clean-world"
+  },
+  "dependencies": {
+    "bs-platform": "github:bsansouci/bsb-native",
+    "immutable-re": "0.0.15",
+    "reprocessing": "Schmavery/reprocessing#bsb-support-new"
+  },
+  "devDependencies": {
+    "webpack": "^3.3.0"
+  }
+}
