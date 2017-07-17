@@ -74,10 +74,11 @@ let moveMongoose tiles (x, y) (sx, sy) => {
 
 let mongooseStep ate state => {
   let {tiles, snake, size, mongooseTimer, mongeese} = state;
+  let mongooseMoveWait = snake.Snake.size > 20 ? 2 : 4;
   /* TODO move mongeese */
   let (tiles, mongeese) = List.fold_left
   (fun (tiles, mongeese) mongoose => {
-    if (Random.int 10 > 4) {
+    if (Random.int 10 > mongooseMoveWait) {
       let newMongoose = moveMongoose tiles mongoose snake.Snake.head;
       (
         HashMap.put mongoose Tile.Empty tiles
@@ -94,9 +95,9 @@ let mongooseStep ate state => {
   [%guard let true = ate][@else {...state, tiles, mongeese}];
 
   let (mongooseTimer, newMongoose) = switch mongooseTimer {
-    | -1 => (snake.Snake.size == 10 ? 10 : -1, None)
+    | -1 => (snake.Snake.size >= 10 ? 0 : -1, None)
     | 0 => {
-      (50 + Random.int 20, Some (emptySpot tiles size))
+      (5, Some (emptySpot tiles size))
     }
     | _ => (mongooseTimer - 1, None)
   };
