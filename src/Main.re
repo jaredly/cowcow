@@ -10,12 +10,12 @@ let setup env => {
   Draw.fill Constants.red env;
   Draw.noStroke env;
   {
-    game: Game.initialState (30, 30),
+    game: Game.initialState (20, 20),
     tick: 0,
   }
 };
 
-let scale = 20;
+let scale = 30;
 
 let keyPressed state env => {
   {...state, game: Game.handleKey state.game (Reprocessing.Env.keyCode env)}

@@ -33,6 +33,15 @@ let keyToSnakeDirection key => {
   }
 };
 
+let rec newCowPlace tiles (w, h) => {
+  let x = Random.int w;
+  let y = Random.int h;
+  switch (HashMap.getOrRaise (x, y) tiles) {
+    | Tile.Empty => (x, y)
+    | _ => newCowPlace tiles (w, h)
+  }
+};
+
 let step state => {
   [%guard let Alive = state.status][@else state];
   [%guard let false = state.paused][@else state];
@@ -50,6 +59,7 @@ let step state => {
   };
   let tiles = HashMap.put newBody Tile.SnakeBody tiles;
   let tiles = HashMap.put newHead Tile.SnakeHead tiles;
+  let tiles = ate ? HashMap.put (newCowPlace tiles size) Tile.Cow tiles : tiles;
   {...state, tiles, snake: ate ? Snake.eat snake : snake, status}
 };
 
@@ -88,6 +98,8 @@ let initialState (w, h) => {
     (Immutable.List.toIterable
       (makeBoard w h)))
     |> addSnake snake;
+  let cow = newCowPlace tiles (w, h);
+  let tiles = HashMap.put cow Tile.Cow tiles;
   {
     size: (w, h),
     snake,
