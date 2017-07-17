@@ -6,6 +6,7 @@ type t =
   | Empty
   | Mongoose
   | Barrier
+  | Cow
   | Portal (string, pos)
   | SnakeBody
   | SnakeHead
@@ -13,9 +14,10 @@ type t =
 
 let tileColor tile => switch tile {
   | Empty => Constants.white
+  | Cow => Constants.black
   | Barrier
   | Portal _
-  | Mongoose => Constants.black
+  | Mongoose => Constants.blue
   | SnakeBody => Constants.red
   | SnakeHead => Constants.green
 };

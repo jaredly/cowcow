@@ -3,8 +3,8 @@ let module HashMap = Immutable.HashMap;
 let module Vector = Immutable.Vector;
 
 type gameStatus =
-    /* TODO intro */
-    | Alive
+  /* TODO intro */
+  | Alive
   | Dead;
 
 type state = {
@@ -12,13 +12,14 @@ type state = {
   size: (int, int),
   snake: Snake.t,
   status: gameStatus,
+  paused: bool,
 };
 
 let iterTiles fn state => {
   HashMap.reduce
   (fun () pos tile => fn pos tile)
   ()
-  state.tiles
+  state.tiles;
 };
 
 let keyToSnakeDirection key => {
@@ -33,26 +34,23 @@ let keyToSnakeDirection key => {
 };
 
 let step state => {
-  open Tile;
+  [%guard let Alive = state.status][@else state];
+  [%guard let false = state.paused][@else state];
   let {tiles, snake, size, status} = state;
-  [%guard let Alive = status][@else state];
 
   let (snake, cleared, newBody, newHead) = Snake.move snake size;
   let tiles = switch cleared {
-    | Some tile => HashMap.put tile Empty tiles
+    | Some tile => HashMap.put tile Tile.Empty tiles
     | None => tiles
   };
-  let status = switch (HashMap.getOrRaise newHead tiles) {
-    | Empty => {
-      Alive
-    }
-    | _ => {
-      Dead
-    }
+  let (status, ate) = switch (HashMap.getOrRaise newHead tiles) {
+    | Tile.Empty => (Alive, false)
+    | Tile.Cow => (Alive, true)
+    | _ => (Dead, false)
   };
-  let tiles = HashMap.put newBody SnakeBody tiles;
-  let tiles = HashMap.put newHead SnakeHead tiles;
-  {...state, tiles, snake, status}
+  let tiles = HashMap.put newBody Tile.SnakeBody tiles;
+  let tiles = HashMap.put newHead Tile.SnakeHead tiles;
+  {...state, tiles, snake: ate ? Snake.eat snake : snake, status}
 };
 
 let makeBoard w h => {
@@ -95,12 +93,24 @@ let initialState (w, h) => {
     snake,
     tiles,
     status: Alive,
+    paused: false,
   }
 };
 
 let handleKey state key => {
-  switch (keyToSnakeDirection key) {
-    | Some key => {...state, snake: Snake.setDirection state.snake key}
-    | None => state
+  /* [%bail if (Reprocessing.Events.Space == key) {
+
+  }]; */
+
+  switch key {
+    | Reprocessing.Events.Space => {
+      {...state, paused: not state.paused}
+    }
+    | _ => {
+      switch (keyToSnakeDirection key) {
+        | Some key => {...state, snake: Snake.setDirection state.snake key}
+        | None => state
+      }
+    }
   }
 };
