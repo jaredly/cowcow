@@ -21,7 +21,7 @@ let keyPressed state env => {
   {...state, game: Game.handleKey state.game (Reprocessing.Env.keyCode env)}
 };
 
-let background = Reprocessing.Utils.color 200 200 200;
+let background = Reprocessing.Utils.color r::200 g::200 b::200;
 
 let draw state env => {
   open Reprocessing;

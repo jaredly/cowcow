@@ -44,13 +44,14 @@ let rec emptySpot tiles (w, h) => {
   }
 };
 
-let rec firstEmpty tiles choices => {
+let rec firstEmptyOrSnake tiles choices => {
   switch choices {
-    | [] => None
+    | [] => (None, false)
     | [pos, ...rest] => {
       switch (HashMap.getOrRaise pos tiles) {
-        | Tile.Empty => Some pos
-        | _ => firstEmpty tiles rest
+        | Tile.Empty => (Some pos, false)
+        | Tile.SnakeHead => (Some pos, true)
+        | _ => firstEmptyOrSnake tiles rest
       }
     }
   }
@@ -66,9 +67,9 @@ let moveMongoose tiles (x, y) (sx, sy) => {
     (x + dx, y),
     (x, y + dy),
   ];
-  switch (firstEmpty tiles choices) {
-    | Some pos => pos
-    | None => (x, y)
+  switch (firstEmptyOrSnake tiles choices) {
+    | (Some pos, snake) => (pos, snake)
+    | (None, snake) => ((x, y), snake)
   }
 };
 
@@ -76,23 +77,26 @@ let mongooseStep ate state => {
   let {tiles, snake, size, mongooseTimer, mongeese} = state;
   let mongooseMoveWait = snake.Snake.size > 20 ? 2 : 4;
   /* TODO move mongeese */
-  let (tiles, mongeese) = List.fold_left
-  (fun (tiles, mongeese) mongoose => {
+  let (tiles, mongeese, snakeIsDead) = List.fold_left
+  (fun (tiles, mongeese, snakeIsDead) mongoose => {
     if (Random.int 10 > mongooseMoveWait) {
-      let newMongoose = moveMongoose tiles mongoose snake.Snake.head;
+      let (newMongoose, killedSnake) = moveMongoose tiles mongoose snake.Snake.head;
       (
         HashMap.put mongoose Tile.Empty tiles
         |> HashMap.put newMongoose Tile.Mongoose,
-        [newMongoose, ...mongeese]
+        [newMongoose, ...mongeese],
+        killedSnake || snakeIsDead
       )
     } else {
-      (tiles, [mongoose, ...mongeese])
+      (tiles, [mongoose, ...mongeese], snakeIsDead)
     }
   })
-  (tiles, [])
+  (tiles, [], false)
   mongeese;
 
-  [%guard let true = ate][@else {...state, tiles, mongeese}];
+  let status = state.status == Alive ? (snakeIsDead ? Dead : Alive) : state.status;
+
+  [%guard let true = ate][@else {...state, tiles, mongeese, status}];
 
   let (mongooseTimer, newMongoose) = switch mongooseTimer {
     | -1 => (snake.Snake.size >= 10 ? 0 : -1, None)
@@ -106,9 +110,9 @@ let mongooseStep ate state => {
     | Some tile => {
       let tiles = HashMap.put tile Tile.Mongoose tiles;
       let mongeese = [tile, ...mongeese];
-      {...state, mongooseTimer, mongeese, tiles}
+      {...state, mongooseTimer, mongeese, tiles, status}
     }
-    | None => {...state, mongooseTimer, mongeese, tiles}
+    | None => {...state, mongooseTimer, mongeese, tiles, status}
   }
 };
 
