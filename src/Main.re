@@ -21,14 +21,18 @@ let keyPressed state env => {
   {...state, game: Game.handleKey state.game (Reprocessing.Env.keyCode env)}
 };
 
+let background = Reprocessing.Utils.color 200 200 200;
+
 let draw state env => {
   open Reprocessing;
-  Draw.background Constants.black env;
+  Draw.background background env;
 
   Game.iterTiles
   (fun (x, y) tile => {
-    Draw.fill (Tile.tileColor tile) env;
-    Draw.rect pos::(x * scale, y * scale) width::scale height::scale env;
+    if (tile != Tile.Empty) {
+      Draw.fill (Tile.tileColor tile) env;
+      Draw.rect pos::(x * scale, y * scale) width::scale height::scale env;
+    };
     ()
   }) state.game;
 

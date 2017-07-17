@@ -59,10 +59,12 @@ let rec firstEmpty tiles choices => {
 let moveMongoose tiles (x, y) (sx, sy) => {
   let dx = compare sx x;
   let dy = compare sy y;
-  let choices = [
-    (x + dx, y + dy),
+  let choices = Random.bool () ? [
     (x, y + dy),
     (x + dx, y),
+  ] : [
+    (x + dx, y),
+    (x, y + dy),
   ];
   switch (firstEmpty tiles choices) {
     | Some pos => pos
@@ -174,7 +176,7 @@ let initialState (w, h) => {
     status: Alive,
     paused: false,
     mongooseTimer: -1,
-    mongeese: [(10, 10)],
+    mongeese: [],
   }
 };
 
