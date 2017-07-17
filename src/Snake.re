@@ -23,6 +23,7 @@ let opposite direction => switch direction {
 
 type t = {
   body: Vector.t Tile.pos,
+  size: int,
   head: Tile.pos,
   direction: direction,
   lastDirection: direction,
@@ -36,13 +37,14 @@ let setDirection state direction => direction == opposite state.lastDirection
 let initial (w, h) => {
   body: Vector.init 1 (fun _ => (4, 5)),
   /* body: Vector.init 5 (fun x => (x, 5)), */
+  size: 5,
   head: (5, 5),
   direction: Right,
   lastDirection: Right,
   newBody: 5,
 };
 
-let eat snake => {...snake, newBody: snake.newBody + 1};
+let eat snake => {...snake, newBody: snake.newBody + 1, size: snake.size + 1};
 
 let wrap n max => n < 0 ? n + max : (n >= max ? n - max : n);
 
@@ -51,17 +53,17 @@ let calcNextHead (x, y) direction (w, h) => {
   (wrap (x + dx) w, wrap (y + dy) h)
 };
 
-let move {body, head, direction, newBody} size => {
+let move snake size => {
+  let {body, head, direction, newBody} = snake;
   let last = Vector.firstOrRaise body;
   let lastHead = head;
   let head = calcNextHead head direction size;
-  /* Js.log newBody; */
   let body = newBody > 0 ? body : Vector.skip 1 body;
   let body = Vector.addLast lastHead body;
   let snake = {
+    ...snake,
     body,
     head,
-    direction,
     lastDirection: direction,
     newBody: newBody > 0 ? newBody - 1: newBody
   };
