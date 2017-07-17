@@ -1,7 +1,7 @@
 {
   "name" : "reasnake",
   "reason" : { "react-jsx" : true},
-  "bs-dependencies": ["reprocessing", "immutable-re"],
+  "bs-dependencies": ["reprocessing", "ReasonglInterface", "ReasonglWeb", "immutable-re"],
   /*
   "entries": [{
     "kind": "bytecode",

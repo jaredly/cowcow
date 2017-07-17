@@ -1,16 +1,11 @@
-open Reprocessing;
-let module Vector = Immutable.Vector;
-let module HashMap = Immutable.HashMap;
-
-type board = HashMap.t Tile.pos Tile.t;
 
 type state = {
   game: Game.state,
   tick: int,
 };
 
-
 let setup env => {
+  open Reprocessing;
   Env.size width::600 height::600 env;
   Draw.fill Constants.red env;
   Draw.noStroke env;
@@ -22,23 +17,27 @@ let setup env => {
 
 let scale = 20;
 
+let keyPressed state env => {
+  {...state, game: Game.handleKey state.game (Reprocessing.Env.keyCode env)}
+};
+
 let draw state env => {
+  open Reprocessing;
   Draw.background Constants.black env;
 
-  HashMap.reduce
-  (fun () (x, y) tile => {
+  Game.iterTiles
+  (fun (x, y) tile => {
     Draw.fill (Tile.tileColor tile) env;
     Draw.rect pos::(x * scale, y * scale) width::scale height::scale env;
     ()
-  })
-  ()
-  state.game.Game.tiles;
+  }) state.game;
+
   let state = {...state, tick: state.tick + 1};
-  if (state.tick mod 5 == 0) {
+  if (state.tick mod 10 == 0) {
     {...state, game: Game.step state.game}
   } else {
     state
   }
 };
 
-run ::setup ::draw ();
+Reprocessing.run ::setup ::draw ::keyPressed ();

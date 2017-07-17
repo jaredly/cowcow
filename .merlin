@@ -6,6 +6,10 @@ B /Users/jared/clone/apps/reasnake/node_modules/bs-platform/lib/ocaml
 FLG -nostdlib -no-alias-deps -color always
 S /Users/jared/clone/apps/reasnake/node_modules/reprocessing/lib/ocaml
 B /Users/jared/clone/apps/reasnake/node_modules/reprocessing/lib/ocaml
+S /Users/jared/clone/apps/reasnake/node_modules/ReasonglInterface/lib/ocaml
+B /Users/jared/clone/apps/reasnake/node_modules/ReasonglInterface/lib/ocaml
+S /Users/jared/clone/apps/reasnake/node_modules/ReasonglWeb/lib/ocaml
+B /Users/jared/clone/apps/reasnake/node_modules/ReasonglWeb/lib/ocaml
 S /Users/jared/clone/apps/reasnake/node_modules/immutable-re/lib/ocaml
 B /Users/jared/clone/apps/reasnake/node_modules/immutable-re/lib/ocaml
 S src

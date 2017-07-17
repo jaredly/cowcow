@@ -8,6 +8,31 @@ type state = {
   snake: Snake.t,
 };
 
+let iterTiles fn state => {
+  HashMap.reduce
+  (fun () pos tile => fn pos tile)
+  ()
+  state.tiles
+};
+
+let keyToSnakeDirection key => {
+  open Reprocessing.Events;
+  switch key {
+    | Up => Some Snake.Up
+    | Left => Some Snake.Left
+    | Right => Some Snake.Right
+    | Down => Some Snake.Down
+    | _ => None
+  }
+};
+
+let handleKey state key => {
+  switch (keyToSnakeDirection key) {
+    | Some key => {...state, snake: Snake.setDirection state.snake key}
+    | None => state
+  }
+};
+
 let step state => {
   open Tile;
   let {tiles, snake, size} = state;

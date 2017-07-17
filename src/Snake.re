@@ -20,6 +20,8 @@ type t = {
   direction: direction,
 };
 
+let setDirection state direction => {...state, direction};
+
 let initial (w, h) => {
   body: Vector.init 5 (fun x => (x, 5)),
   head: (5, 5),
