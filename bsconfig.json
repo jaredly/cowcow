@@ -8,6 +8,7 @@
     "main": "Main"
   }],
   */
+  "ppx-flags": ["/Users/jared/clone/experiments/ppx_guard/_build/install/default/bin/ppx_guard"],
   "sources": [
     "src"
   ]

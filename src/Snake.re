@@ -37,11 +37,10 @@ let calcNextHead (x, y) direction (w, h) => {
 
 let move {body, head, direction} size => {
   let last = Vector.firstOrRaise body;
-  let length = Vector.count body;
-  let head = Vector.getOrRaise (length - 1) body;
-  let nextHead = calcNextHead head direction size;
+  let lastHead = head;
+  let head = calcNextHead head direction size;
 
   let body = Vector.skip 1 body;
-  let body = Vector.addLast nextHead body;
-  ({body, head, direction}, Some last, head, nextHead)
+  let body = Vector.addLast lastHead body;
+  ({body, head, direction}, Some last, lastHead, head)
 };

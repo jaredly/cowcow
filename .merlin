@@ -1,4 +1,5 @@
 ####{BSB GENERATED: NO EDIT
+FLG -ppx /Users/jared/clone/experiments/ppx_guard/_build/install/default/bin/ppx_guard
 FLG -ppx '/Users/jared/clone/apps/reasnake/node_modules/bs-platform/bin/reactjs_jsx_ppx.exe'
 FLG -ppx /Users/jared/clone/apps/reasnake/node_modules/bs-platform/bin/bsppx.exe
 S /Users/jared/clone/apps/reasnake/node_modules/bs-platform/lib/ocaml

@@ -2,10 +2,16 @@
 let module HashMap = Immutable.HashMap;
 let module Vector = Immutable.Vector;
 
+type gameStatus =
+    /* TODO intro */
+    | Alive
+  | Dead;
+
 type state = {
   tiles: HashMap.t Tile.pos Tile.t,
   size: (int, int),
   snake: Snake.t,
+  status: gameStatus,
 };
 
 let iterTiles fn state => {
@@ -26,26 +32,27 @@ let keyToSnakeDirection key => {
   }
 };
 
-let handleKey state key => {
-  switch (keyToSnakeDirection key) {
-    | Some key => {...state, snake: Snake.setDirection state.snake key}
-    | None => state
-  }
-};
-
 let step state => {
   open Tile;
-  let {tiles, snake, size} = state;
+  let {tiles, snake, size, status} = state;
+  [%guard let Alive = status][@else state];
 
   let (snake, cleared, newBody, newHead) = Snake.move snake size;
   let tiles = switch cleared {
     | Some tile => HashMap.put tile Empty tiles
     | None => tiles
   };
+  let status = switch (HashMap.getOrRaise newHead tiles) {
+    | Empty => {
+      Alive
+    }
+    | _ => {
+      Dead
+    }
+  };
   let tiles = HashMap.put newBody SnakeBody tiles;
   let tiles = HashMap.put newHead SnakeHead tiles;
-
-  {...state, tiles, snake}
+  {...state, tiles, snake, status}
 };
 
 let makeBoard w h => {
@@ -77,15 +84,23 @@ let universalCompare x y => {
 
 let initialState (w, h) => {
   let snake = Snake.initial (w, h);
-  {
-    size: (w, h),
-    snake: snake,
-    tiles: (addSnake snake
-      (HashMap.fromEntriesWith
+  let tiles = (HashMap.fromEntriesWith
     hash::Hashtbl.hash
     comparator::universalCompare
     (Immutable.List.toIterable
-      (makeBoard w h))
-    )),
+      (makeBoard w h)))
+    |> addSnake snake;
+  {
+    size: (w, h),
+    snake,
+    tiles,
+    status: Alive,
+  }
+};
+
+let handleKey state key => {
+  switch (keyToSnakeDirection key) {
+    | Some key => {...state, snake: Snake.setDirection state.snake key}
+    | None => state
   }
 };
