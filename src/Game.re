@@ -76,7 +76,6 @@ let moveMongoose tiles (x, y) (sx, sy) => {
 let mongooseStep ate state => {
   let {tiles, snake, size, mongooseTimer, mongeese} = state;
   let mongooseMoveWait = snake.Snake.size > 20 ? 2 : 4;
-  /* TODO move mongeese */
   let (tiles, mongeese, snakeIsDead) = List.fold_left
   (fun (tiles, mongeese, snakeIsDead) mongoose => {
     if (Random.int 10 > mongooseMoveWait) {
