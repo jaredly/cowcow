@@ -4,7 +4,12 @@ type images = {
   headDown: Reprocessing_Types.Types.imageT,
   headLeft: Reprocessing_Types.Types.imageT,
   headRight: Reprocessing_Types.Types.imageT,
-  snakeBody: Reprocessing_Types.Types.imageT,
+  bodyTL: Reprocessing_Types.Types.imageT,
+  bodyTR: Reprocessing_Types.Types.imageT,
+  bodyBL: Reprocessing_Types.Types.imageT,
+  bodyBR: Reprocessing_Types.Types.imageT,
+  bodyH: Reprocessing_Types.Types.imageT,
+  bodyV: Reprocessing_Types.Types.imageT,
   mongoose: Reprocessing_Types.Types.imageT,
   apple: Reprocessing_Types.Types.imageT,
 };
@@ -29,7 +34,12 @@ let setup env => {
       headDown: Draw.loadImage filename::"images/head_down.png" env,
       headLeft: Draw.loadImage filename::"images/head_left.png" env,
       headRight: Draw.loadImage filename::"images/head_right.png" env,
-      snakeBody: Draw.loadImage filename::"images/body.png" env,
+      bodyBL: Draw.loadImage filename::"images/body_bl.png" env,
+      bodyBR: Draw.loadImage filename::"images/body_br.png" env,
+      bodyTL: Draw.loadImage filename::"images/body_tl.png" env,
+      bodyTR: Draw.loadImage filename::"images/body_tr.png" env,
+      bodyH: Draw.loadImage filename::"images/body_h.png" env,
+      bodyV: Draw.loadImage filename::"images/body_v.png" env,
       mongoose: Draw.loadImage filename::"images/mongoose.png" env,
       apple: Draw.loadImage filename::"images/cow.png" env,
     },
@@ -63,7 +73,14 @@ let draw state env => {
         });
       }
       | Empty => None
-      | SnakeBody _ => Some state.images.snakeBody
+      | SnakeBody dir => Some (switch dir {
+        | TL => state.images.bodyTL
+        | TR => state.images.bodyTR
+        | BL => state.images.bodyBL
+        | BR => state.images.bodyBR
+        | H => state.images.bodyH
+        | V => state.images.bodyV
+      })
       | Mongoose => Some state.images.mongoose
       | Cow => Some state.images.apple
       | _ => {

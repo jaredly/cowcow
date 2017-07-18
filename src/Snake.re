@@ -63,10 +63,10 @@ let move snake size => {
   let bodyDirection = switch (snake.lastDirection, snake.direction) {
     | (Up, Up) | (Down, Down) => Tile.V
     | (Left, Left) | (Right, Right) => Tile.H
-    | (Up, Left) | (Left, Up) => Tile.TL
-    | (Up, Right) | (Right, Up) => Tile.TR
-    | (Down, Left) | (Left, Down) => Tile.BL
-    | (Down, Right) | (Right, Down) => Tile.BR
+    | (Up, Left) | (Right, Down) => Tile.BL
+    | (Up, Right) | (Left, Down) => Tile.BR
+    | (Down, Left) | (Right, Up) => Tile.TL
+    | (Down, Right) | (Left, Up) => Tile.TR
     | _ => assert false
   };
   let snake = {
