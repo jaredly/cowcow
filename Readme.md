@@ -4,6 +4,8 @@ A snake game where you eat cows and run away from mongeese.
 
 ![origin of the name](name.png)
 
+![screenshot](screenshot.png)
+
 ## Building
 
 ```
