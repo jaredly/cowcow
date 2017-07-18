@@ -148,7 +148,7 @@ let makeBoard w h => {
 
 let addSnake snake board => {
   let board = Vector.reduce
-  (fun board pos => HashMap.put pos (Tile.SnakeBody Tile.H) board)
+  (fun board pos => HashMap.put pos (Tile.SnakeBody Tile.R) board)
   board
   snake.Snake.body;
   HashMap.put snake.Snake.head Tile.SnakeHead board;

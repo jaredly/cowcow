@@ -53,6 +53,8 @@ let calcNextHead (x, y) direction (w, h) => {
   (wrap (x + dx) w, wrap (y + dy) h)
 };
 
+let tail snake => Vector.firstOrRaise snake.body;
+
 let move snake size => {
   let {body, head, direction, newBody} = snake;
   let last = Vector.firstOrRaise body;
@@ -61,12 +63,18 @@ let move snake size => {
   let body = newBody > 0 ? body : Vector.skip 1 body;
   let body = Vector.addLast lastHead body;
   let bodyDirection = switch (snake.lastDirection, snake.direction) {
-    | (Up, Up) | (Down, Down) => Tile.V
-    | (Left, Left) | (Right, Right) => Tile.H
-    | (Up, Left) | (Right, Down) => Tile.BL
-    | (Up, Right) | (Left, Down) => Tile.BR
-    | (Down, Left) | (Right, Up) => Tile.TL
-    | (Down, Right) | (Left, Up) => Tile.TR
+    | (Up, Up) => Tile.U
+    | (Down, Down) => Tile.D
+    | (Left, Left) => Tile.L
+    | (Right, Right) => Tile.R
+    | (Up, Left) => Tile.BL
+    | (Right, Down) => Tile.LB
+    | (Up, Right) => Tile.BR
+    | (Left, Down) => Tile.RB
+    | (Down, Left) => Tile.TL
+    | (Right, Up) => Tile.LT
+    | (Down, Right) => Tile.TR
+    | (Left, Up) => Tile.RT
     | _ => assert false
   };
   let snake = {

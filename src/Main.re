@@ -4,6 +4,10 @@ type images = {
   headDown: Reprocessing_Types.Types.imageT,
   headLeft: Reprocessing_Types.Types.imageT,
   headRight: Reprocessing_Types.Types.imageT,
+  tailUp: Reprocessing_Types.Types.imageT,
+  tailDown: Reprocessing_Types.Types.imageT,
+  tailLeft: Reprocessing_Types.Types.imageT,
+  tailRight: Reprocessing_Types.Types.imageT,
   bodyTL: Reprocessing_Types.Types.imageT,
   bodyTR: Reprocessing_Types.Types.imageT,
   bodyBL: Reprocessing_Types.Types.imageT,
@@ -34,6 +38,10 @@ let setup env => {
       headDown: Draw.loadImage filename::"images/head_down.png" env,
       headLeft: Draw.loadImage filename::"images/head_left.png" env,
       headRight: Draw.loadImage filename::"images/head_right.png" env,
+      tailUp: Draw.loadImage filename::"images/tail_up.png" env,
+      tailDown: Draw.loadImage filename::"images/tail_down.png" env,
+      tailLeft: Draw.loadImage filename::"images/tail_left.png" env,
+      tailRight: Draw.loadImage filename::"images/tail_right.png" env,
       bodyBL: Draw.loadImage filename::"images/body_bl.png" env,
       bodyBR: Draw.loadImage filename::"images/body_br.png" env,
       bodyTL: Draw.loadImage filename::"images/body_tl.png" env,
@@ -59,10 +67,19 @@ let draw state env => {
   open Reprocessing;
   Draw.background background env;
 
+  let tail = Snake.tail state.game.Game.snake;
+
   Game.iterTiles
   (fun (x, y) tile => {
     open Tile;
-    let image = switch tile {
+    let image = (x, y) == tail ?
+    Some (switch (tailDirection tile) {
+      | Up => state.images.tailUp
+      | Down => state.images.tailDown
+      | Left => state.images.tailLeft
+      | Right => state.images.tailRight
+    })
+    : switch tile {
       | SnakeHead => {
         open Snake;
         Some (switch state.game.Game.snake.lastDirection {
@@ -74,12 +91,12 @@ let draw state env => {
       }
       | Empty => None
       | SnakeBody dir => Some (switch dir {
-        | TL => state.images.bodyTL
-        | TR => state.images.bodyTR
-        | BL => state.images.bodyBL
-        | BR => state.images.bodyBR
-        | H => state.images.bodyH
-        | V => state.images.bodyV
+        | TL | LT => state.images.bodyTL
+        | TR | RT => state.images.bodyTR
+        | BL | LB => state.images.bodyBL
+        | BR | RB => state.images.bodyBR
+        | L | R => state.images.bodyH
+        | U | D => state.images.bodyV
       })
       | Mongoose => Some state.images.mongoose
       | Cow => Some state.images.apple
