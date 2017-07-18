@@ -60,6 +60,15 @@ let move snake size => {
   let head = calcNextHead head direction size;
   let body = newBody > 0 ? body : Vector.skip 1 body;
   let body = Vector.addLast lastHead body;
+  let bodyDirection = switch (snake.lastDirection, snake.direction) {
+    | (Up, Up) | (Down, Down) => Tile.V
+    | (Left, Left) | (Right, Right) => Tile.H
+    | (Up, Left) | (Left, Up) => Tile.TL
+    | (Up, Right) | (Right, Up) => Tile.TR
+    | (Down, Left) | (Left, Down) => Tile.BL
+    | (Down, Right) | (Right, Down) => Tile.BR
+    | _ => assert false
+  };
   let snake = {
     ...snake,
     body,
@@ -67,5 +76,5 @@ let move snake size => {
     lastDirection: direction,
     newBody: newBody > 0 ? newBody - 1: newBody
   };
-  (snake, newBody > 0 ? None : Some last, lastHead, head)
+  (snake, newBody > 0 ? None : Some last, lastHead, bodyDirection, head)
 };

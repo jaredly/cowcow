@@ -55,7 +55,7 @@ let draw state env => {
     let image = switch tile {
       | SnakeHead => {
         open Snake;
-        Some (switch state.game.Game.snake.direction {
+        Some (switch state.game.Game.snake.lastDirection {
           | Up => state.images.headUp
           | Down => state.images.headDown
           | Left => state.images.headLeft
@@ -63,7 +63,7 @@ let draw state env => {
         });
       }
       | Empty => None
-      | SnakeBody => Some state.images.snakeBody
+      | SnakeBody _ => Some state.images.snakeBody
       | Mongoose => Some state.images.mongoose
       | Cow => Some state.images.apple
       | _ => {

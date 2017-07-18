@@ -120,7 +120,7 @@ let step state => {
   [%guard let false = state.paused][@else state];
   let {tiles, snake, size} = state;
 
-  let (snake, cleared, newBody, newHead) = Snake.move snake size;
+  let (snake, cleared, newBody, newBodyDirection, newHead) = Snake.move snake size;
   let tiles = switch cleared {
     | Some tile => HashMap.put tile Tile.Empty tiles
     | None => tiles
@@ -130,7 +130,7 @@ let step state => {
     | Tile.Cow => (Alive, true)
     | _ => (Dead, false)
   };
-  let tiles = HashMap.put newBody Tile.SnakeBody tiles;
+  let tiles = HashMap.put newBody (Tile.SnakeBody newBodyDirection) tiles;
   let tiles = HashMap.put newHead Tile.SnakeHead tiles;
   let tiles = ate ? HashMap.put (emptySpot tiles size) Tile.Cow tiles : tiles;
   mongooseStep ate {...state, tiles, snake: ate ? Snake.eat snake : snake, status}
@@ -148,7 +148,7 @@ let makeBoard w h => {
 
 let addSnake snake board => {
   let board = Vector.reduce
-  (fun board pos => HashMap.put pos Tile.SnakeBody board)
+  (fun board pos => HashMap.put pos (Tile.SnakeBody Tile.H) board)
   board
   snake.Snake.body;
   HashMap.put snake.Snake.head Tile.SnakeHead board;

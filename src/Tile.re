@@ -1,6 +1,14 @@
 
 let module Constants = Reprocessing.Constants;
 
+type bodyDirection =
+  | V
+  | H
+  | TL
+  | TR
+  | BL
+  | BR;
+
 type pos = (int, int);
 type t =
   | Empty
@@ -8,7 +16,7 @@ type t =
   | Barrier
   | Cow
   | Portal (string, pos)
-  | SnakeBody
+  | SnakeBody bodyDirection
   | SnakeHead
   ;
 
@@ -19,6 +27,6 @@ let tileColor tile => switch tile {
   | Barrier
   | Portal _
   | Mongoose => Constants.blue
-  | SnakeBody => Reprocessing.Utils.color 100 0 0
+  | SnakeBody _ => Reprocessing.Utils.color 100 0 0
   | SnakeHead => Reprocessing.Utils.color 255 0 0
 };
